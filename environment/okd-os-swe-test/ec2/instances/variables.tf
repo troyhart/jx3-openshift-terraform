@@ -1,0 +1,13 @@
+variable "vpc_name" {}
+variable "subnet_tag_name" {}
+variable "key_name" {}
+variable "ami" {}
+variable "master_instance_profile" {}
+variable "worker_instance_profile" {}
+variable "master_sg_name" {}
+variable "worker_sg_name" {}
+variable "clusterid" {}
+variable "vpc_cidr" {}
+variable "any_cidr" {}
+variable "openvpn_cidr" {}
+variable "office_cidr" {}

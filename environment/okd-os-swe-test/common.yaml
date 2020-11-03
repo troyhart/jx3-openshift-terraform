@@ -1,0 +1,65 @@
+domain: "my-test.aws.example.com"
+vpc_name: "openshift-test"
+ami: "ami-08ae7f93cb670ab1a"
+key_name: "nataylor"
+subnet_tag_name: "vpc/test/private-Subnet*"
+master_sg_name: "openshift-master"
+worker_sg_name: "openshift-worker"
+bootstrap_sg_name: "openshift-bootstrap"
+efs_sg_name: "openshift-efs"
+master_instance_profile: "openshift-master-role"
+worker_instance_profile: "openshift-worker-role"
+bootstrap_instance_profile: "openshift-bootstrap-role"
+vpc_cidr: "10.75.0.0/18"
+any_cidr: "0.0.0.0/0"
+openvpn_cidr: "10.28.28.0/22"
+office_cidr: "10.44.0.0/16"
+cluster_name: "os1"
+clusterid: "os1-8vdtv"
+
+# Set up a cluster
+# - run create_ignition.sh
+# - copy cluster-id to common.yaml in swe-test terraform
+# - terragrunt swe-test/bootstrap apply
+# - terragrunt swe-test/ec2/instances apply 
+# - terragrunt swe-test/ec2/nlb apply
+# - terragrunt swe-test/efs apply
+# - check bootstrap complete: 
+#       openshift-install wait-for bootstrap-complete --log-level debug
+#        - watch for masters to come up.  also watch operators.
+# - check install complete: 
+#       openshift-install wait-for install-complete --log-level debug
+# - export KUBECONFIG=/home/nataylor/repository/myriad/openshift4-install/okd45/auth/kubeconfig
+# - check csr:  oc get csr 
+# - approve csr:  oc get csr | grep Pending | awk '{print $1}' | xargs oc adm certificate approve
+# - add correct CNAME for load balancer.
+# - add correct subnets to ingress created classic load balancer. (IF you don't have the security groups labeled with the clusterid tagging.  which I do not because then the uninstall trys to delete the subnets.)
+# - terragrunt swe-test/bootstrap destroy
+#
+#   
+
+# delete cluster notes
+# N/A remove tag from iam role
+# N/A - remove clusterid from subnets
+# - remove  route lb sg references in sg's
+# - terragrunt swe-test/efs destroy
+# - terragrunt swe-test/ec2/nlb destroy
+# - terragrunt swe-test/ec2/instances destroy
+# - openshift-install destroy cluster
+#
+# https://bugzilla.redhat.com/show_bug.cgi?id=1468579
+# https://github.com/kubernetes/kubernetes/issues/17620
+# oc edit service router-default -n openshift-ingress
+# annotations:
+#   service.beta.kubernetes.io/aws-load-balancer-internal: "0.0.0.0/0"
+#   service.beta.kubernetes.io/aws-load-balancer-type: nlb
+#   service.beta.kubernetes.io/aws-load-balancer-target-type: ip
+# Things to remember
+#  - add infrastructure id (okd45-asf) to load balancer terraform configs.
+#  - when ingress-route service comes up we need it to create a load balancer.
+#  - set iam okd users to service-group.
+#  - set masters without KubernetesCluster = infra-id tag? 
+# https://access.redhat.com/solutions/4455731 - authentication
+#
+#  - ingress dns issue
+#    https://bugzilla.redhat.com/show_bug.cgi?id=1873728
